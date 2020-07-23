@@ -2,21 +2,22 @@
 <template>
   <div>
     <router-view></router-view>
-    <FooterGuide></FooterGuide>
+    <FooterGuide v-show="$route.meta.showFooter"></FooterGuide>
   </div>
 </template>
 
 <script>
-import FooterGuide from './components/FooterGuide/FooterGuide'
+import FooterGuide from "./components/FooterGuide/FooterGuide";
 export default {
   data() {
-    return {
-
-    }
+    return {};
+  },
+  mounted() {
+    this.$store.dispatch("getAddress")
   },
   components: {
-    FooterGuide
-  }
-}
+    FooterGuide,
+  },
+};
 </script>
 <style lang='stylus' scoped></style>

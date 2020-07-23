@@ -15,10 +15,10 @@ Vue.use(VueRouter)
 export default new VueRouter({
   mode: 'history',
   routes: [
-    {path: '/msite', component: Msite},
-    {path: '/order', component: Order},
-    {path: '/profile', component: Profile},
-    {path: '/search', component: Search},
+    {path: '/msite', component: Msite, meta: {showFooter: true}},
+    {path: '/order', component: Order, meta: {showFooter: true}},
+    {path: '/profile', component: Profile, meta: {showFooter: true}},
+    {path: '/search', component: Search, meta: {showFooter: true}},
     {path: '/login', component: Login},
     {redirect: '/msite', path: '/'}
   ]
