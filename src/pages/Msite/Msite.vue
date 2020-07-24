@@ -11,128 +11,84 @@
     </Header>
     <!--首页导航-->
     <nav class="msite_nav border-1px">
-      <div class="swiper-container">
+      <div class="swiper-container" v-if="categorys.length > 0">
         <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <a href="javascript:" class="link_to_food">
+          <div class="swiper-slide" v-for="(categorys, index) in categorysArr" :key="index">
+            <a
+              href="javascript:"
+              class="link_to_food"
+              v-for="(category, index) in categorys"
+              :key="index"
+            >
               <div class="food_container">
-                <img src="./images/nav/1.jpg" />
+                <img :src="imgBaseUrl + category.image_url" />
               </div>
-              <span>甜品饮品</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/2.jpg" />
-              </div>
-              <span>商超便利</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/3.jpg" />
-              </div>
-              <span>美食</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/4.jpg" />
-              </div>
-              <span>简餐</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/5.jpg" />
-              </div>
-              <span>新店特惠</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/6.jpg" />
-              </div>
-              <span>准时达</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/7.jpg" />
-              </div>
-              <span>预订早餐</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/8.jpg" />
-              </div>
-              <span>土豪推荐</span>
-            </a>
-          </div>
-          <div class="swiper-slide">
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/1.jpg" />
-              </div>
-              <span>甜品饮品</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/2.jpg" />
-              </div>
-              <span>商超便利</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/3.jpg" />
-              </div>
-              <span>美食</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/4.jpg" />
-              </div>
-              <span>简餐</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/5.jpg" />
-              </div>
-              <span>新店特惠</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/6.jpg" />
-              </div>
-              <span>准时达</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/1.jpg" />
-              </div>
-              <span>预订早餐</span>
-            </a>
-            <a href="javascript:" class="link_to_food">
-              <div class="food_container">
-                <img src="./images/nav/2.jpg" />
-              </div>
-              <span>土豪推荐</span>
+              <span>{{category.title}}</span>
             </a>
           </div>
         </div>
         <!-- Add Pagination -->
-        <div class="swiper-pagination"></div>
+        <div class="swiper-pagination">
+          <span class="swiper-pagination-bullet swiper-pagination-bullet-active"></span>
+          <span class="swiper-pagination-bullet"></span>
+        </div>
+      </div>
+      <div v-else>
+        <img src="./msite_back.svg" alt />
       </div>
     </nav>
     <!--首页附近商家-->
-    <Shop/>
+    <Shop />
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import Shop from '../../components/Shops/Shops'
+import { mapState } from "vuex";
+import Shop from "../../components/Shops/Shops";
+// 引入swiper
+import Swiper from "swiper";
+import "swiper/swiper-bundle.min.css";
 export default {
+  name: "Msite",
+  data() {
+    return {
+      imgBaseUrl: "http://fuss10.elemecdn.com",
+    };
+  },
   computed: {
-    ...mapState(['address'])
+    ...mapState(["address"]),
+    ...mapState(["categorys"]),
+    categorysArr() {
+      const { categorys } = this;
+      const arr = []; // 创建目标二维数组
+      let minArr = [];
+      categorys.forEach((c) => {
+        if (minArr.length === 8) {
+          minArr = [];
+        }
+        if (minArr.length === 0) {
+          arr.push(minArr);
+        }
+        minArr.push(c);
+      });
+      return arr;
+    },
+  },
+  mounted() {
+    this.$store.dispatch("getCategories");
+    setTimeout(() => {
+      new Swiper(".swiper-container", {
+        loop: true, // 循环模式选项
+        // 如果需要分页器
+        pagination: {
+          el: ".swiper-pagination",
+        },
+      });
+    }, 1000);
   },
   components: {
-    Shop
-  }
+    Shop,
+  },
 };
 </script>
 
@@ -175,6 +131,10 @@ export default {
               font-size 13px
               color #666
       .swiper-pagination
+        width 100%
+        bottom 3px
+        >.swiper-pagination-bullet
+          margin 0 4px
         >span.swiper-pagination-bullet-active
           background #02a774
- </style>
+</style>

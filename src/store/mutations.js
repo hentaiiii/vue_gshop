@@ -4,7 +4,8 @@
 
 import {
   RECEIVE_ADDRESS,
-  RECEIVE_SHOPS
+  RECEIVE_SHOPS,
+  RECEIVE_CATEGORY
 } from './mutaion_types'
 
 
@@ -14,5 +15,8 @@ export default {
    },
    [RECEIVE_SHOPS](state, {shops}) {
      state.shops = shops
+   },
+   [RECEIVE_CATEGORY](state, {categorys}){
+    state.categorys = categorys
    }
 }
