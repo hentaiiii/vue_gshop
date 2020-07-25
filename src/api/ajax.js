@@ -8,6 +8,7 @@ import axios from 'axios'
 import qs from 'qs'
 
 // axios.defaults.baseURL = 'http://localhost:4000'
+axios.defaults.timeout = 20000
 
 // 添加请求拦截器
 axios.interceptors.request.use(config => {

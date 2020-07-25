@@ -6,14 +6,14 @@
         <i class="iconfont icon-sousuo"></i>
       </a>
       <a class="header_login" slot="right">
-        <span class="header_login_text">登录|注册</span>
+        <span class="header_login_text" @click="$router.push('/login')">登录|注册</span>
       </a>
     </Header>
     <!--首页导航-->
     <nav class="msite_nav border-1px">
       <div class="swiper-container" v-if="categorys.length > 0">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="(categorys, index) in categorysArr" :key="index">
+          <div class="swiper-slide" v-for="(categorys, index) in categorysArr2" :key="index">
             <a
               href="javascript:"
               class="link_to_food"
@@ -29,12 +29,12 @@
         </div>
         <!-- Add Pagination -->
         <div class="swiper-pagination">
-          <span class="swiper-pagination-bullet swiper-pagination-bullet-active"></span>
-          <span class="swiper-pagination-bullet"></span>
+          <!-- <span class="swiper-pagination-bullet swiper-pagination-bullet-active"></span>
+          <span class="swiper-pagination-bullet"></span>-->
         </div>
       </div>
       <div v-else>
-        <img src="./msite_back.svg" alt />
+        <img src="./msite_back.svg" />
       </div>
     </nav>
     <!--首页附近商家-->
@@ -43,11 +43,19 @@
 </template>
 
 <script>
+/**
+ * swiper创建的时机：要等数据接受以后 页面渲染完成之后创建
+ *  因此在mouted里面创建太早会导致页面排版出现问题
+ *  解决方案： 1. watch (监听数据变化) + nextTick （在页面渲染完成后执行回调函数）
+ *            2. callback (给dispathc穿一个回调参数，在commit之后执行， 这样也可以保证获取到了数据) + nextTick
+ *            3. this.$store.dispatch()方法返回的是一个promise 在完成接接受数据以后执行 可以用async await等完全接受数据以后再用nextTick搞定
+ */
 import { mapState } from "vuex";
 import Shop from "../../components/Shops/Shops";
+import chunk from 'lodash/chunk.js'
 // 引入swiper
 import Swiper from "swiper";
-import "swiper/swiper-bundle.min.css";
+import "swiper/dist/css/swiper.css";
 export default {
   name: "Msite",
   data() {
@@ -73,18 +81,29 @@ export default {
       });
       return arr;
     },
+    // 使用lodash 工具函数实现数组合并
+    categorysArr2() {
+      return chunk(this.categorys, 8)
+    }
   },
   mounted() {
-    this.$store.dispatch("getCategories");
-    setTimeout(() => {
-      new Swiper(".swiper-container", {
-        loop: true, // 循环模式选项
-        // 如果需要分页器
-        pagination: {
-          el: ".swiper-pagination",
-        },
+    this.$store.dispatch("getCategories")
+  },
+  watch: {
+    /**
+     * 更新状态数据 ==》 调用监视回调 ==》 异步更新界面
+     */
+    categorys() {
+      this.$nextTick(() => {
+        new Swiper(".swiper-container", {
+          loop: true, // 循环模式选项
+          // 如果需要分页器
+          pagination: {
+            el: ".swiper-pagination",
+          }
+        });
       });
-    }, 1000);
+    },
   },
   components: {
     Shop,
