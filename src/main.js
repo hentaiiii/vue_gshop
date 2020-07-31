@@ -10,6 +10,9 @@ import Star from './components/Star/Star.vue'
 Vue.component('Header', Header)
 Vue.component('Star', Star)
 
+// 引入表单验证vee-validate
+import './validate'
+
 // 引入vuex
 import store from './store/index'
 

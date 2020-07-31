@@ -12,16 +12,34 @@
         <form>
           <div :class="{on: isPwdLogin}">
             <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号" v-model="phone" />
+              <input
+                type="tel"
+                maxlength="11"
+                name="phone"
+                placeholder="手机号"
+                v-model="phone"
+                autocomplete="off"
+                v-validate="'required|mobile'"
+              />
               <button
                 :disabled="!rightPhone || computeTime> 0"
                 class="get_verification"
                 :class="{right_phone: rightPhone}"
                 @click.prevent="getPhone"
               >{{computeTime> 0 ? `已发送(${computeTime})` : '获取验证码'}}</button>
+              <span style="color: red" v-show="errors.has('phone')">{{ errors.first('phone') }}</span>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码" />
+              <input
+                type="tel"
+                maxlength="8"
+                placeholder="验证码"
+                v-model="code"
+                name="code"
+                autocomplete="off"
+                v-validate="{required: true, regex: /^\d{6}$/}"
+              />
+              <span style="color: red" v-show="errors.has('code')">{{ errors.first('code') }}</span>
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -31,18 +49,54 @@
           <div :class="{on: !isPwdLogin}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" />
+                <input
+                  type="tel"
+                  maxlength="11"
+                  placeholder="手机/邮箱/用户名"
+                  autocomplete="off"
+                  v-model="username"
+                  name="username"
+                  v-validate="'required|username'"
+                />
+                <span
+                  style="color: red"
+                  v-show="errors.has('username')"
+                >{{ errors.first('username') }}</span>
               </section>
               <section class="login_verification">
-                <input :type="showPwd ? 'text': 'password'" maxlength="8" placeholder="密码" v-model="pwd"/>
-                <div class="switch_button" :class="showPwd ? 'on': 'off'" @click="showPwd = !showPwd">
+                <input
+                  :type="showPwd ? 'text': 'password'"
+                  maxlength="8"
+                  placeholder="密码"
+                  v-model="pwd"
+                  name="password"
+                  v-validate="'required|password'"
+                />
+                <span
+                  style="color: red"
+                  v-show="errors.has('password')"
+                >{{ errors.first('password') }}</span>
+                <div
+                  class="switch_button"
+                  :class="showPwd ? 'on': 'off'"
+                  @click="showPwd = !showPwd"
+                >
                   <div class="switch_circle" :class="{right: showPwd}"></div>
                   <span class="switch_text">{{showPwd ? 'abc': '...'}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码" />
+                <input
+                  type="text"
+                  maxlength="11"
+                  placeholder="验证码"
+                  autocomplete="off"
+                  v-model="captcha"
+                  name="captcha"
+                  v-validate="'required|captcha'"
+                />
                 <img class="get_verification" alt="captcha" />
+                <span style="color: red" v-show="errors.has('captcha')">{{ errors.first('captcha')}}</span>
               </section>
             </section>
           </div>
@@ -64,8 +118,12 @@ export default {
       isPwdLogin: false, // 是否是密码登陆
       phone: "", // 手机号
       computeTime: 0, // 计时
-      pwd: '', // 密码
-      showPwd: false
+      pwd: "", // 密码
+      showPwd: false, // 显示隐藏密码
+      code: "", // 手机验证码
+      username: "", // 用户名
+      password: "", // 密码
+      captcha: "", // 图形验证码
     };
   },
   computed: {
@@ -77,10 +135,10 @@ export default {
     getPhone() {
       this.computeTime = 10;
       this.intervalId = setInterval(() => {
-        this.computeTime--
+        this.computeTime--;
         if (this.computeTime <= 0) {
           // 清除定时器
-          clearInterval(this.intervalId)
+          clearInterval(this.intervalId);
         }
       }, 1000);
     },
@@ -190,7 +248,7 @@ export default {
                 box-shadow 0 2px 4px 0 rgba(0, 0, 0, 0.1)
                 transition transform 0.3s
                 &.right
-                  transform translateX(30px) 
+                  transform translateX(30px)
           .login_hint
             margin-top 12px
             color #999
