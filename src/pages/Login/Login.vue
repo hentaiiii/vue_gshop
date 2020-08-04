@@ -4,34 +4,34 @@
       <div class="login_header">
         <h2 class="login_logo">硅谷外卖</h2>
         <div class="login_header_title">
-          <a href="javascript:;" :class="{on: isPwdLogin}" @click="isPwdLogin = !isPwdLogin">短信登录</a>
-          <a href="javascript:;" :class="{on: !isPwdLogin}" @click="isPwdLogin = !isPwdLogin">密码登录</a>
+          <a href="javascript:;" :class="{on: loginWay}" @click="loginWay = !loginWay">短信登录</a>
+          <a href="javascript:;" :class="{on: !loginWay}" @click="loginWay = !loginWay">密码登录</a>
         </div>
       </div>
       <div class="login_content">
         <form>
-          <div :class="{on: isPwdLogin}">
+          <div :class="{on: loginWay}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone" />
               <button
                 :disabled="!rightPhone || computeTime> 0"
                 class="get_verification"
                 :class="{right_phone: rightPhone}"
-                @click.prevent="getPhone"
+                @click.prevent="getPhoneCode"
               >{{computeTime> 0 ? `已发送(${computeTime})` : '获取验证码'}}</button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码" />
+              <input type="tel" placeholder="验证码" v-model="code"/>
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
               <a href="javascript:;">《用户服务协议》</a>
             </section>
           </div>
-          <div :class="{on: !isPwdLogin}">
+          <div :class="{on: !loginWay}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" />
+                <input type="tel" v-model="name" placeholder="手机/邮箱/用户名" />
               </section>
               <section class="login_verification">
                 <input :type="showPwd ? 'text': 'password'" maxlength="8" placeholder="密码" v-model="pwd"/>
@@ -41,12 +41,13 @@
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码" />
-                <img class="get_verification" alt="captcha" />
+                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha"/>
+                <!-- <img class="get_verification" alt="图片"  @click="getCaptcha" ref="captcha"/> -->
+                <img class="get_verification" alt="图片" src="http://localhost:4000/captcha" @click="getCaptcha" ref="captcha"/>
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit" @click.prevent="userLogin">登录</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
       </div>
@@ -58,13 +59,19 @@
 </template>
 
 <script>
+import {reqSendCode, reqSmsLogin, reqPwdLogin} from '../../api/index'
+import {Toast, MessageBox } from 'mint-ui'
 export default {
+  name: 'Login',
   data() {
     return {
-      isPwdLogin: false, // 是否是密码登陆
+      loginWay: false, // 是否是密码登陆 true是短信登陆 false是密码登陆
       phone: "", // 手机号
+      code: "", // 短信验证码
       computeTime: 0, // 计时
+      name: '', //用户名
       pwd: '', // 密码
+      captcha: '', // 图形验证码
       showPwd: false
     };
   },
@@ -74,7 +81,7 @@ export default {
     },
   },
   methods: {
-    getPhone() {
+    async getPhoneCode() {
       this.computeTime = 10;
       this.intervalId = setInterval(() => {
         this.computeTime--
@@ -83,7 +90,42 @@ export default {
           clearInterval(this.intervalId)
         }
       }, 1000);
+
+      const result = await reqSendCode(this.phone)
+      if(result.code === 0){
+        Toast('短信已发送')
+      }else{
+        MessageBox('提示', result.msg);
+      }
     },
+    // 获取验证码
+    getCaptcha() {
+      this.$refs.captcha.src = "http://localhost:4000/captcha?time=" + Date.now()
+    },
+    // 用户登陆
+    async userLogin() {
+      const {loginWay, phone, code, name, pwd, captcha} = this
+      let result
+      if(loginWay){
+        // 短信登陆
+        result = await reqSmsLogin({phone, code})
+      }else{
+        // 密码登陆
+        result = await reqPwdLogin({name, pwd, captcha})
+      }
+      if(result.code === 0){
+        Toast('登陆成功')
+        // 保存用户信息
+        const user = result.data
+        this.$store.dispatch('getUser', user)
+        // 跳转到profile页面
+        this.$router.push('/profile')
+      }else{
+        MessageBox('提示', result.msg)
+        // 刷新二维码
+        this.getCaptcha()
+      }
+    }
   },
 };
 </script>

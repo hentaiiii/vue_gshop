@@ -15,15 +15,53 @@ export const reqAddress = (latitude, longitude) => ajax({
 /**
  * 获取食品分类列表
  */
-export const reqCategory = () => ajax.get(BASE +'/index_category')
+export const reqCategory = () => ajax.get(BASE + '/index_category', {
+  headers: {
+    needToken: true
+  }
+})
 
 /**
  * 根据经纬度获取商铺列表
  */
 export const reqShopList = ({latitude, longitude}) => ajax({
   url: BASE + "/shops",
+  params: { latitude, longitude},
+  headers: {
+    needToken: true
+  }
+})
+/**
+ * 获取短信验证码
+ */
+export const reqSendCode = (phone) => ajax.get(BASE + '/sendcode', {
   params: {
-    latitude,
-    longitude
+    phone
+  }
+})
+/**
+ * 短信登陆
+ */
+export const reqSmsLogin = ({phone,code}) => ajax.post(BASE + '/login_sms', {
+  phone,
+  code
+})
+
+/**
+ * 密码登陆
+ */
+export const reqPwdLogin = ({name, pwd, captcha
+}) => ajax.post(BASE +'/login_pwd', {
+  name,
+  pwd,
+  captcha
+})
+
+/**
+ * 根据token自动登陆
+ */
+export const reqAutoLogin = () => ajax.get(BASE + '/auto_login', {
+  headers: {
+    needToken: true
   }
 })

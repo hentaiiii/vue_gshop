@@ -5,13 +5,19 @@ import router from './router/index'
 // 引入ajax
 import './api/index'
 
+// 引入mbutton
+import {Button} from 'mint-ui'
+
 import Header from './components/Header/Header.vue'
 import Star from './components/Star/Star.vue'
 Vue.component('Header', Header)
 Vue.component('Star', Star)
+Vue.component(Button.name, Button)
 
 // 引入vuex
 import store from './store/index'
+
+/*eslint no-debugger: "error"*/
 
 
 // new Vue({
