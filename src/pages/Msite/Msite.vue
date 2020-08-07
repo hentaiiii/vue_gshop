@@ -51,7 +51,7 @@
  *            3. this.$store.dispatch()方法返回的是一个promise 在完成接接受数据以后执行 可以用async await等完全接受数据以后再用nextTick搞定
  */
 import { mapState } from "vuex";
-import Shop from "../../components/Shops/Shops";
+import Shop from "../../components/Shops/ShopsList";
 import chunk from 'lodash/chunk.js'
 // 引入swiper
 import Swiper from "swiper";

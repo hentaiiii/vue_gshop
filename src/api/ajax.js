@@ -56,7 +56,7 @@ axios.interceptors.response.use(res => {
   if (!response) {
     if (status === 401) {
       if (router.currentRoute.path !== '/login') {
-        Toast(message + 'aaaa')
+        Toast(message)
         router.replace('/login')
       }
     }
@@ -65,7 +65,7 @@ axios.interceptors.response.use(res => {
     if (status === 401) {
       if (router.currentRoute.path !== '/login') {
         // 提示错误消息
-        Toast(response.data.message + 'bbbb')
+        Toast(response.data.message)
         // 退出登陆 （清除token）
         store.dispatch('loginOut')
         // 跳转到登陆页面

@@ -9,6 +9,11 @@ import Order from 'pages/Order/Order.vue'
 import Profile from 'pages/Profile/Profile.vue'
 import Search from 'pages/Search/Search.vue'
 import Login from 'pages/Login/Login.vue'
+import Shop from '../pages/Shop/Shop.vue'
+
+import ShopGoods from '../pages/Shop/ShopGoods/ShopGoods.vue'
+import ShopRatings from '../pages/Shop/ShopRatings/ShopRatings.vue'
+import ShopInfo from '../pages/Shop/ShopInfo/ShopInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -20,6 +25,12 @@ export default new VueRouter({
     {path: '/profile', component: Profile, meta: {showFooter: true}},
     {path: '/search', component: Search, meta: {showFooter: true}},
     {path: '/login', component: Login},
+    {path: '/shop', component: Shop, children: [
+      {path: '/shop/good', component: ShopGoods},
+      {path: '/shop/rating', component: ShopRatings},
+      {path: '/shop/info', component: ShopInfo},
+      {redirect: '/shop/good', path: '/shop'}
+    ]},
     {redirect: '/msite', path: '/'}
   ]
 })

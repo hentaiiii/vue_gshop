@@ -8,6 +8,9 @@ import './api/index'
 // 引入mbutton
 import {Button} from 'mint-ui'
 
+// 引入mock数据
+import './mock/mock-server'
+
 import Header from './components/Header/Header.vue'
 import Star from './components/Star/Star.vue'
 Vue.component('Header', Header)

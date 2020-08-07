@@ -5,17 +5,27 @@ import {
   reqAddress,
   reqShopList,
   reqCategory,
-  reqAutoLogin
+
+  reqAutoLogin,
+
+  reqGoods,
+  reqInfo,
+  reqRatings,
 } from '../api/index'
 
 import {
   RECEIVE_ADDRESS,
   RECEIVE_SHOPS,
   RECEIVE_CATEGORY,
+
   RECEIVE_USER,
   RESET_USER,
   RECEIVE_TOKEN,
-  RESET_TOKEN
+  RESET_TOKEN,
+
+  RECEIVE_GOODS,
+  RECEIVE_RATINGS,
+  RECEIVE_INFO,
 } from './mutaion_types'
 
 
@@ -45,6 +55,7 @@ export default {
        commit(RECEIVE_CATEGORY, {categorys: res.data})
      }
    },
+
 
    // 保存user信息
    getUser({commit}, user) {
@@ -76,6 +87,31 @@ export default {
         commit(RECEIVE_USER, {user})
       }
      }
-    
-   }
+   },
+
+
+   // 获取商品列表数组
+   async getGoods({commit}) {
+     const result = await reqGoods()
+     if(result.code === 0){
+       const goods = result.data
+       commit(RECEIVE_GOODS, goods)
+     }
+   },
+   // 获取商家店铺评论数组
+   async getRatings({commit}) {
+    const result = await reqRatings()
+    if(result.code === 0){
+      const ratings = result.data
+      commit(RECEIVE_RATINGS, ratings)
+    }
+  },
+   // 获取商家
+   async getInfo({commit}) {
+    const result = await reqInfo()
+    if(result.code === 0){
+      const info = result.data
+      commit(RECEIVE_INFO, info)
+    }
+  },
 }

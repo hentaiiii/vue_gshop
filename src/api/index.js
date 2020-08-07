@@ -65,3 +65,33 @@ export const reqAutoLogin = () => ajax.get(BASE + '/auto_login', {
     needToken: true
   }
 })
+/**
+ * 获取商家商品列表
+ */
+export const reqGoods = () => ajax.get('/goods', {
+  headers: {
+    needToken: true
+  }
+})
+
+/**
+ * 获取商家信息
+ */
+export const reqInfo = () => ajax.get('/info', {
+  headers: {
+    needToken: true
+  }
+})
+
+ /**
+  * 获取评论信息
+  */
+ export const reqRatings = () => ajax.get('/ratings', {
+  headers: {
+    needToken: true
+  }
+})
+
+reqGoods().then((result) => {
+  console.log(result)
+})
