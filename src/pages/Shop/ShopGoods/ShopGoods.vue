@@ -46,12 +46,14 @@
         </ul>
       </div>
     </div>
+    <ShopCart/>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import BScroll from "better-scroll";
+import ShopCart from '../../../components/ShopCart/ShopCart'
 export default {
   name: "ShopGoods",
   data() {
@@ -128,9 +130,11 @@ export default {
       const top = this.tops[index]
       this.scrollY = top
       this.rightScroll.scrollTo(0, -top, 500)
-      console.log(index)
     }
   },
+  components: {
+    ShopCart
+  }
 };
 </script>
 <style lang="stylus" rel="stylesheet/stylus">

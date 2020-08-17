@@ -1,28 +1,32 @@
 <!-- cartControl -->
 <template>
   <div class="cartcontrol">
-    <div class="iconfont icon-remove_circle_outline" @click = 'updateFoodCount(true)'></div>
-    <div class="cart-count">1</div>
-    <div class="iconfont icon-add_circle" @click = 'updateFoodCount(false)'></div>
+    <transition name="move">
+      <div
+        class="iconfont icon-remove_circle_outline"
+        v-show="food.count"
+        @click="updateFoodCount(true)"
+      ></div>
+    </transition>
+    <div class="cart-count" v-show="food.count">{{food.count}}</div>
+    <div class="iconfont icon-add_circle" @click="updateFoodCount(false)"></div>
   </div>
 </template>
 
 <script>
 export default {
-   props: {
-    food: Object
+  props: {
+    food: Object,
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
     updateFoodCount(isReduce) {
-      if(isReduce){ // 减少
-        console.log('减少')
-      }else{ // 增加
-        console.log('减少');
-      }
-    }
+      // eslint-disable-next-line no-debugger
+      // debugger 执行两次
+      this.$store.dispatch("updateFoodCount", { isReduce, food: this.food })
+    },
   },
 };
 </script>
@@ -42,6 +46,11 @@ export default {
     line-height 24px
     font-size 24px
     color $green
+    &.move-enter-active, &.move-leave-active
+      transition all 0.5s
+    &.move-enter, &.move-leave-to
+      opacity 0
+      transform translateX(15px) rotate(180deg)
   .cart-count
     display inline-block
     vertical-align top

@@ -13,25 +13,39 @@
         <router-link to="/shop/info" replace>商家</router-link>
       </div>
     </div>
-     <router-view></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import ShopHeader from "../../components/ShopHeader/ShopHeader";
+import {mapState} from 'vuex'
 export default {
   data() {
-    return {}
+    return {};
   },
   mounted() {
-    this.$store.dispatch('getGoods')
-    this.$store.dispatch('getRatings')
-    this.$store.dispatch('getInfo')
+    if(this.goods.length === 0){
+      this.$store.dispatch("getGoods")
+    }
+    if(this.goods.length === 0){
+      this.$store.dispatch("getRatings")
+    }
+    if(this.goods.length === 0){
+      this.$store.dispatch("getInfo")
+    }
+  },
+  computed: {
+    ...mapState({
+      goods: state => state.shop.goods,
+      info: state => state.shop.info,
+      ratings: state => state.shop.ratings,
+    })
   },
   components: {
     ShopHeader,
   },
-}
+};
 </script>
 <style lang='stylus' scoped>
 @import '../../common/stylus/mixins.styl'
