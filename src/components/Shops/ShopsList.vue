@@ -67,7 +67,10 @@ export default {
     this.$store.dispatch("getShops");
   },
   computed: {
-    ...mapState(["shops"]),
+    // ...mapState(["shops"]),
+    ...mapState({
+      shops: state => state.msite.shops
+    })
   },
   methods: {
     goShop() {

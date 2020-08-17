@@ -105,17 +105,21 @@
 
 <script>
 import { mapState } from "vuex";
-import { MessageBox } from "mint-ui";
+import { MessageBox, Toast } from "mint-ui";
 export default {
   name: "Profile",
   computed: {
-    ...mapState(["user"]),
+    // ...mapState(['user']),
+    ...mapState({
+      user: state => state.users.user
+    })
   },
   methods: {
     loginOut() {
       MessageBox.confirm("确定退出登陆吗?").then(
         () => {
-          this.$store.dispatch("loginOut");
+          this.$store.dispatch("loginOut")
+          Toast('退出成功')
         },
         () => {}
       )

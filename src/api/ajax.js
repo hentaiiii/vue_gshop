@@ -29,7 +29,7 @@ axios.interceptors.request.use(config => {
     qs.stringify(data)
 
   if (config.headers.needToken) {
-    const token = store.state.token
+    const token = store.state.users.token
     if (token) {
       config.headers.Authorization = token
     } else {
@@ -46,21 +46,21 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(res => {
   // 成功响应
   return res.data
-}, error => {
+}, err => {
   const {
     response,
     message
-  } = error
-  const status = response.status
+  } = err
   // 没发送登陆请求 没有token
   if (!response) {
-    if (status === 401) {
+    if (err.code === 401) {
       if (router.currentRoute.path !== '/login') {
         Toast(message)
         router.replace('/login')
       }
     }
   } else {
+    const status = response.status
     // 有token但是过期了
     if (status === 401) {
       if (router.currentRoute.path !== '/login') {

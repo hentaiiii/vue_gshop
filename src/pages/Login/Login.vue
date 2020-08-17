@@ -79,6 +79,10 @@ export default {
     rightPhone() {
       return /^1\d{10}$/.test(this.phone);
     },
+ 
+  },
+  mounted() {
+    this.$refs.captcha.src = "http://localhost:4000/captcha?time=" + Date.now()
   },
   methods: {
     async getPhoneCode() {

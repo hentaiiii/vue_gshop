@@ -64,8 +64,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(["address"]),
-    ...mapState(["categorys"]),
+    // ...mapState(["address"]),
+    // ...mapState(["categorys"]),
+    ...mapState({
+      address: state => state.msite.address,
+      categorys: state => state.msite.categorys,
+    }),
     categorysArr() {
       const { categorys } = this;
       const arr = []; // 创建目标二维数组

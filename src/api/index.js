@@ -91,7 +91,3 @@ export const reqInfo = () => ajax.get('/info', {
     needToken: true
   }
 })
-
-reqGoods().then((result) => {
-  console.log(result)
-})

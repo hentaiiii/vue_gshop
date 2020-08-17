@@ -10,11 +10,14 @@ import {Button} from 'mint-ui'
 
 // 引入mock数据
 import './mock/mock-server'
+// 引入cartControl
+import CartControl from './components/cartControl/cartControl.vue'
 
 import Header from './components/Header/Header.vue'
 import Star from './components/Star/Star.vue'
 Vue.component('Header', Header)
 Vue.component('Star', Star)
+Vue.component('CartControl', CartControl)
 Vue.component(Button.name, Button)
 
 // 引入vuex
