@@ -4,7 +4,13 @@
     <div class="goods">
       <div class="menu-wrapper" ref="left">
         <ul ref="leftUl">
-          <li class="menu-item" :class="{current: currentIndex == index}" v-for="(good, index) in goods" :key="index" @click="selectItem(index)">
+          <li
+            class="menu-item"
+            :class="{current: currentIndex == index}"
+            v-for="(good, index) in goods"
+            :key="index"
+            @click="selectItem(index)"
+          >
             <span class="text bottom-border-1px">
               <img class="icon" :src="good.icon" v-if="good.icon" />
               {{good.name}}
@@ -23,7 +29,7 @@
                 :key="index"
               >
                 <div class="icon">
-                  <img width="57" height="57" :src="food.icon" />
+                  <img width="57" height="57" :src="food.icon" @click="showFood(food)"/>
                 </div>
                 <div class="content">
                   <h2 class="name">{{food.name}}</h2>
@@ -37,7 +43,7 @@
                     <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <CartControl :food="food"/>
+                    <CartControl :food="food" />
                   </div>
                 </div>
               </li>
@@ -45,22 +51,25 @@
           </li>
         </ul>
       </div>
+      <ShopCart />
     </div>
-    <ShopCart/>
+    <Food ref="food" :food="food"/>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import BScroll from "better-scroll";
-import ShopCart from '../../../components/ShopCart/ShopCart'
+import ShopCart from "../../../components/ShopCart/ShopCart";
+import Food from "../../../components/Food/Food";
 export default {
   name: "ShopGoods",
   data() {
     return {
       tops: [], // 右侧li分类top组成的列表
-      scrollY: 0, // 右侧列表滑动的li的距离 
-    }
+      scrollY: 0, // 右侧列表滑动的li的距离
+      food: {}, // 传food组件的food
+    };
   },
   computed: {
     ...mapState({
@@ -68,73 +77,82 @@ export default {
     }),
 
     currentIndex() {
-      const {tops, scrollY} = this
-      let index = tops.findIndex((top, index)=> top <= scrollY && scrollY < tops[index+1])
-      if(this.index !== index && this.leftScroll){
-        const li = this.$refs.leftUl.children[index]
-        this.leftScroll.scrollToElement(li, 500)
+      const { tops, scrollY } = this;
+      let index = tops.findIndex(
+        (top, index) => top <= scrollY && scrollY < tops[index + 1]
+      );
+      if (this.index !== index && this.leftScroll) {
+        const li = this.$refs.leftUl.children[index];
+        this.leftScroll.scrollToElement(li, 500);
       }
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.index = index
-      return index
-    }
+      this.index = index;
+      return index;
+    },
   },
   mounted() {
     // 刚开始有数据
-    if(this.goods.length> 0){
-      this._initScroll()
-      this._initTops()
+    if (this.goods.length > 0) {
+      this._initScroll();
+      this._initTops();
     }
   },
   watch: {
     goods() {
       this.$nextTick(() => {
         // 开始没有数据， 后面才有数据
-        this._initScroll()
-        this._initTops()
+        this._initScroll();
+        this._initTops();
       });
     },
   },
   methods: {
     _initScroll() {
       this.leftScroll = new BScroll(this.$refs.left, {
-        click: true
-      })
+        click: true,
+      });
       this.rightScroll = new BScroll(this.$refs.right, {
         click: true,
         probeType: 1, // 触摸 非实时
         // probeType: 2, // 触摸 实时
         // probeType: 3, // 触摸/惯性 实时
-      })
-      this.rightScroll.on('scroll', (e) => {
-        this.scrollY = Math.abs(e.y)
-      })
-      this.rightScroll.on('scrollEnd', (e) => {
-        this.scrollY = Math.abs(e.y)
-      })
+      });
+      this.rightScroll.on("scroll", (e) => {
+        this.scrollY = Math.abs(e.y);
+      });
+      this.rightScroll.on("scrollEnd", (e) => {
+        this.scrollY = Math.abs(e.y);
+      });
     },
 
     _initTops() {
-      const tops = []
-      let top = 0
-      tops.push(top)
-      const lis = this.$refs.rightUl.children
-      Array.prototype.forEach.call(lis, li => {
-        top += li.clientHeight
-        tops.push(top)
-      })
-      this.tops = tops
+      const tops = [];
+      let top = 0;
+      tops.push(top);
+      const lis = this.$refs.rightUl.children;
+      Array.prototype.forEach.call(lis, (li) => {
+        top += li.clientHeight;
+        tops.push(top);
+      });
+      this.tops = tops;
     },
 
     selectItem(index) {
-      const top = this.tops[index]
-      this.scrollY = top
-      this.rightScroll.scrollTo(0, -top, 500)
-    }
+      const top = this.tops[index];
+      this.scrollY = top;
+      this.rightScroll.scrollTo(0, -top, 500);
+    },
+
+    // 显示食物列表
+    showFood(food) {
+      this.food = food
+      this.$refs.food.toggleShow()
+    },
   },
   components: {
-    ShopCart
-  }
+    ShopCart,
+    Food,
+  },
 };
 </script>
 <style lang="stylus" rel="stylesheet/stylus">

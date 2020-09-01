@@ -12,12 +12,16 @@ import {Button} from 'mint-ui'
 import './mock/mock-server'
 // 引入cartControl
 import CartControl from './components/cartControl/cartControl.vue'
+import Split from './components/Split/Split.vue'
+
 
 import Header from './components/Header/Header.vue'
 import Star from './components/Star/Star.vue'
 Vue.component('Header', Header)
 Vue.component('Star', Star)
 Vue.component('CartControl', CartControl)
+// 注册为全局组件标签
+Vue.component('Split', Split)
 Vue.component(Button.name, Button)
 
 // 引入vuex

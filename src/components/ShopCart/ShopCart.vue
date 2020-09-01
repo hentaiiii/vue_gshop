@@ -103,19 +103,21 @@ export default {
   },
   methods: {
     toggleList() {
-      if(this.totalCount > 0){
+      if (this.totalCount > 0) {
         this.isShow = !this.isShow;
       }
     },
     clearCart() {
       MessageBox({
-        title: "提示",
-        message: "确定清空购物车嘛?",
-        showCancelButton: true,
-      }, () =>{
-        this.$store.dispatch("clearCart")
+          title: '提示',
+          message: '确定清空购物车嘛',
+          showCancelButton: true,
+        }).then(action => {
+          if(action == 'confirm'){
+             this.$store.dispatch("clearCart")
+          }
       })
-      
+
     },
   },
 };
