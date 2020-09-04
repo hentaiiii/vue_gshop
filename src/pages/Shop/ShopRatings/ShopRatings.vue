@@ -74,29 +74,33 @@ export default {
     return {
       selectType: 0, // 选择的类型 0满意 1 不满意 2 全部
       onlyText: true, // 只看有文本的默认为true
-    };
+    }
   },
   computed: {
     ...mapState({
       info: (state) => state.shop.info,
       ratings: (state) => state.shop.ratings,
     }),
-    filterRating() { // 过滤以后的评论列表
-      const {ratings, selectType, onlyText} = this
-      return ratings.filter(rating => {
-        const {rateType, text} = rating 
+    filterRating() {
+      // 过滤以后的评论列表
+      const { ratings, selectType, onlyText } = this;
+      return ratings.filter((rating) => {
+        const { rateType, text } = rating;
         // selectType === 2 或者 selectType = rateType
         // onlyText = false 或者 text.length > 0
-        return (selectType === 2 || selectType === rateType) && (onlyText === false || text.length > 0)
-      })
+        return (
+          (selectType === 2 || selectType === rateType) &&
+          (onlyText === false || text.length > 0)
+        );
+      });
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.scroll = new BScroll(this.$refs.ratings, {
         click: true,
-      })
-    })
+      });
+    });
   },
   methods: {
     // 切换评论种类
