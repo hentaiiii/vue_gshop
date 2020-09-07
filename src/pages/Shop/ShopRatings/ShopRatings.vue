@@ -34,8 +34,6 @@
       <RatingsFilter
         :selectType="selectType"
         :onlyText="onlyText"
-        :setSelectType="setSelectType"
-        :onlyShowContent="onlyShowContent"
       />
 
       <div class="rating-wrapper">
@@ -57,7 +55,7 @@
                 <span class="iconfont icon-thumb_down" v-if="rating.rateType"></span>
                 <span class="iconfont icon-thumb_up" v-else></span>
               </div>
-              <div class="time">{{rating.rateTime}}</div>
+              <div class="time">{{rating.rateTime | date-format}}</div>
             </div>
           </li>
         </ul>
@@ -99,16 +97,20 @@ export default {
     this.$nextTick(() => {
       this.scroll = new BScroll(this.$refs.ratings, {
         click: true,
-      });
-    });
+      })
+    }),
+    // 发布自定义事件
+    console.log(this.eventBus)
+    this.eventBus.$on('setSelectType', this.setSelectType)
+    this.eventBus.$on('onlyShowContent', this.onlyShowContent)
   },
   methods: {
     // 切换评论种类
-    setSelectType(selectType) {
+    setSelectType({selectType}) {
       this.selectType = selectType;
     },
     // 是否只显示文本评论
-    onlyShowContent(onlyText) {
+    onlyShowContent({onlyText}) {
       this.onlyText = onlyText;
     },
   },

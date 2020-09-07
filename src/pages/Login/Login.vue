@@ -131,7 +131,20 @@ export default {
       }
     }
   },
-};
+  // 跳转到路由前 这是的路由组件还没有被创建
+  // 不能获取this
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      const userId = vm.$store.state.users.user._id
+      if(!userId){
+        next()
+      }else{
+        next('/profile')
+      }
+    })
+  }
+}
+
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>

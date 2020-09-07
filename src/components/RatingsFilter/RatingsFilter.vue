@@ -2,20 +2,20 @@
 <template>
   <div class="ratings-filter">
     <div class="rating-type border-1px">
-      <span class="block" @click="setSelectType(2)" :class="selectType === 2 ? 'active': ''">
+      <span class="block" @click="eventBus.$emit('setSelectType', {selectType: 2})" :class="selectType === 2 ? 'active': ''">
         全部
         <span class="count">{{totalRatingCount}}</span>
       </span>
-      <span class="block" @click="setSelectType(0)" :class="selectType === 0 ? 'active': ''">
+      <span class="block" @click="eventBus.$emit('setSelectType', {selectType: 0})" :class="selectType === 0 ? 'active': ''">
         推荐
         <span class="count">{{positiveRatingCount}}</span>
       </span>
-      <span class="block" @click="setSelectType(1)" :class="selectType === 1 ? 'active': ''">
+      <span class="block" @click="eventBus.$emit('setSelectType', {selectType: 1})" :class="selectType === 1 ? 'active': ''">
         吐槽
         <span class="count">{{negativeRatingCount}}</span>
       </span>
     </div>
-    <div class="switch" @click="toggleShowContent" :class ="showContent? ' on': 'off'">
+    <div class="switch" @click="toggleShowContent" :class="showContent? ' on': 'off'">
       <span class="iconfont icon-check_circle"></span>
       <span class="text">只看有内容的评价</span>
     </div>
@@ -23,29 +23,35 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   props: {
     selectType: Number,
     onlyText: Boolean,
-    setSelectType: Function,
-    onlyShowContent: Function,
   },
   data() {
     return {
       showContent: true
-    }
+    };
   },
   methods: {
     toggleShowContent() {
       this.showContent = !this.showContent
-      this.showContent ? this.onlyShowContent(true) : this.onlyShowContent(false)
+      // this.showContent ? this.onlyShowContent(true) : this.onlyShowContent(false)
+      if (this.showContent) {
+        this.eventBus.$emit("onlyShowContent", { onlyText: true })
+      } else {
+        this.eventBus.$emit("onlyShowContent", { onlyText: false })
+      }
     }
   },
   computed: {
-    ...mapGetters(['totalRatingCount', 'positiveRatingCount', 'negativeRatingCount'])
-  },
-
+    ...mapGetters([
+      "totalRatingCount",
+      "positiveRatingCount",
+      "negativeRatingCount"
+    ])
+  }
 };
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
